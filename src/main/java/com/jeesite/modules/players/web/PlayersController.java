@@ -52,6 +52,16 @@ public class PlayersController extends BaseController {
 		model.addAttribute("players", players);
 		return "modules/players/playersList";
 	}
+
+	/**
+	 * 充值列表
+	 */
+	@RequiresPermissions("players:players:view")
+	@RequestMapping(value = "ChongZhiList")
+	public String chongZhiList(Players players, Model model) {
+		model.addAttribute("players", players);
+		return "modules/players/playersMoney";
+	}
 	
 	/**
 	 * 查询列表数据
