@@ -1,0 +1,189 @@
+<% layout('/layouts/default.html', {title: '代理列表管理', libs: ['validate','dataGrid']}){ %>
+
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header with-border">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text(daili.isNewRecord ? '新增代理列表' : '编辑代理列表')}
+			</div>
+			<div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool " data-widget="collapse" ><i class="fa fa-minus"></i></button>
+			</div>
+		</div>
+		<#form:form id="inputForm" model="${daili}"  action = "${ctx}/daili/daili/save?tx=" method="post" class="form-horizontal">
+
+			<div class="box-body">
+				<div class="form-unit">${text('基本信息')}</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('编号')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+
+								<#form:hidden path="isNewRecord"/>
+								<#form:input path="number" maxlength="11" readonly="${!daili.isNewRecord}" class="form-control required abc"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('ID')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="dlId" maxlength="11" class="form-control required digits"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('昵称')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="name" maxlength="255" class="form-control"/>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('代理时间')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="dlTime" readonly="true" maxlength="20" class="form-control Wdate"
+									dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:true});"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('招募人数')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="people" maxlength="255" class="form-control digits"/>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('代理邀请码')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="code" maxlength="255" class="form-control"/>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="row">
+
+
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="" >
+								<span class="required hide">*</span> <p style="color: red">${text('代理雇佣金')}：</p><i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="money" maxlength="255" class="form-control digits"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="" >
+								<span class="required hide">*</span> <p style="color: red">${text('提现金额')}：</p><i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input id ="tx"  maxlength="255" class="form-control digits"/>
+							</div>
+						</div>
+					</div>
+
+					<% if (hasPermi('daili:daili:edit')){ %>
+					<button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i> ${text('提现')}</button>&nbsp;
+					<% } %>
+				</div>
+
+				<h4 class="form-unit">${text('提现记录')}</h4>
+				<div class="ml10 mr10">
+					<table id="txRecordDataGrid"></table>
+
+				</div>
+			</div>
+			<div class="box-footer" >
+				<div style="margin-left: 300px">
+					<div class="col-sm-offset-2 col-sm-10" >
+						<button type="button" class="btn btn-sm btn-default" id="btnCancel" onclick="js.closeCurrentTabPage()"><i class="fa fa-reply-all"></i> ${text('关 闭')}</button>
+					</div>
+				</div>
+			</div>
+		</#form:form>
+	</div>
+</div>
+<% } %>
+<script>
+
+
+//初始化提现记录DataGrid对象
+$("#txRecordDataGrid").dataGrid({
+
+	data: ${toJson(daili.txRecordList)},
+	datatype: "local", // 设置本地数据
+	autoGridHeight: function(){return 'auto'}, // 设置自动高度
+	
+	// 设置数据表格列
+	columnModel: [
+		{header:'状态', name:'status', editable:true, hidden:true},
+		{header:'主键', name:'number', editable:true, hidden:true},
+		{header:'${text("编号")}', name:'number', width:150, editable:false, edittype:'textarea', editoptions:{'maxlength':'11', 'class':'form-control required digits', 'rows':'1'}},
+		{header:'${text("ID")}', name:'dlId.number', editable:false, hidden:false},
+		{header:'${text("昵称")}', name:'name', width:150, editable:false, edittype:'text', editoptions:{'maxlength':'255', 'class':'form-control'}},
+		{header:'${text("提现金额")}', name:'txMoney', width:150, editable:false, edittype:'text', editoptions:{'maxlength':'255', 'class':'form-control'}},
+		{header:'${text("状态")}', name:'txStatus', width:150, editable:false, edittype:'text', editoptions:{'maxlength':'255', 'class':'form-control'}},
+		{header:'${text("提现时间")}', name:'txTime', width:150, editable:false, edittype:'text', editoptions:{'class':'form-control'}},
+		// {header:'${text("操作")}', name:'actions', width:80, sortable:false, fixed:true, formatter: function(val, obj, row, act){
+		// 	var actions = [];
+		// 	if (val == 'new'){
+		// 		actions.push('<a href="#" onclick="js.confirm(\'${text("你确认要删除这条数据吗？")}\', function(){$(\'#txRecordDataGrid\').dataGrid(\'delRowData\',\''+obj.rowId+'\')});return false;"><i class="fa fa-trash-o"></i></a>&nbsp;');
+		// 	}else{
+		// 		actions.push('<a href="#" onclick="js.confirm(\'${text("你确认要删除这条数据吗？")}\', function(){$(\'#txRecordDataGrid\').dataGrid(\'setRowData\',\''+obj.rowId+'\',null,{display:\'none\'})});$(\'#'+obj.rowId+'_status\').val(\''+Global.STATUS_DELETE+'\');return false;"><i class="fa fa-trash-o"></i></a>&nbsp;');
+		// 	}
+		// 	return actions.join('');
+		// }, editoptions: {defaultValue: 'new'}}
+	],
+	
+	// 编辑表格参数
+	editGrid: true,				// 是否是编辑表格
+	editGridInitRowNum: 1,		// 编辑表格的初始化新增行数
+	// editGridAddRowBtn: $('#txRecordDataGridAddRowBtn'),	// 子表增行按钮
+	// editGridAddRowInitData: {number: '', status: Global.STATUS_NORMAL},	// 新增行的时候初始化的数据
+	
+	// 编辑表格的提交数据参数
+	editGridInputFormListName: 'txRecordList', // 提交的数据列表名
+	editGridInputFormListAttrs: 'status,number,dlId.number,name,txMoney,txStatus,txTime,', // 提交数据列表的属性字段
+	
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>
+<script>
+$("#inputForm").validate({
+	submitHandler: function(form){
+		document.getElementById('inputForm').action = document.getElementById('inputForm').action+document.getElementById('tx').value;
+		js.ajaxSubmitForm($(form), function(data){
+			js.showMessage(data.message);
+			if(data.result == Global.TRUE){
+				js.closeCurrentTabPage(function(contentWindow){
+					contentWindow.page();
+				});
+			}
+		}, "json");
+    }
+});
+</script>

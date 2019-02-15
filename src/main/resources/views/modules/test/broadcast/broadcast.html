@@ -1,0 +1,22 @@
+<% layout('/layouts/default.html', {title: '代理列表管理', libs: ['validate','dataGrid']}){ %>
+
+<#form:form id="inputForm"  action = "${ctx}/test/broadcast/sendContent" method="get" class="form-horizontal">
+<div class="row" style="margin-top: 100px">
+    <div class="col-xs-12">
+        <div class="form-group">
+            <label class="control-label col-sm-2" title="">
+                <span class="required hide" aria-required="true">*</span> 广播内容：<i class="fa icon-question hide"></i></label>
+            <div class="col-sm-10">
+                <textarea id="broadcastContent" name="broadcastContent" rows="4" maxlength="200" class="form-control"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-top: 20px;margin-left: 200px">
+    <button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i> ${text('发送')}</button>&nbsp;
+</div>
+</#form:form>
+
+
+
+<% } %>

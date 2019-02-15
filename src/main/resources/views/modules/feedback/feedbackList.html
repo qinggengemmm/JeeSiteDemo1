@@ -1,0 +1,81 @@
+<% layout('/layouts/default.html', {title: '问题反馈管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('问题反馈管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+				<% if(hasPermi('feedback:feedback:edit')){ %>
+					<a href="${ctx}/feedback/feedback/form" class="btn btn-default btnTool" title="${text('新增问题反馈')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+					<button href="#" class="btn btn-default btnTool" id="btndelete" title="${text('批量删除')}"><i class="fa fa-trash"></i> ${text('批量删除')}</button>
+				<% } %>
+			</div>
+
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${feedback}" action="${ctx}/feedback/feedback/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('ID')}：</label>
+					<div class="control-inline">
+						<#form:input path="feedbackId" maxlength="20" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+
+	$(document).ready(function(){
+		$("#btndelete").click(function(){
+			var ids=$('#dataGrid').jqGrid('getGridParam','selarrrow');
+			if (confirm("确认要删除吗？")){
+				for(j = 0,len=ids.length; j < len; j++) {
+					$.post("${ctx}/feedback/feedback/deleteMuti?number="+ids[j],function(){
+
+					});
+				}
+
+			}
+		});
+	});
+
+
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	showCheckbox: true,
+	multiselect:true,
+	columnModel: [
+		{header:'${text("编号")}', name:'number', index:'a.number', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/feedback/feedback/form?number='+row.number+'" class="btnList" data-title="${text("编辑问题反馈")}">'+(val||row.id)+'</a>';
+		}},
+		{header:'${text("ID")}', name:'feedbackId', index:'a.feedback_id', width:150, align:"center"},
+		{header:'${text("用户名")}', name:'username', index:'a.username', width:150, align:"left"},
+		{header:'${text("反馈时间")}', name:'feedbackTime', index:'a.feedback_time', width:150, align:"center"},
+		{header:'${text("反馈内容")}', name:'feedbackContent', index:'a.feedback_content', width:150, align:"left"},
+		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(hasPermi('feedback:feedback:edit')){ %>
+				actions.push('<a href="${ctx}/feedback/feedback/form?number='+row.number+'" class="btnList" title="${text("编辑问题反馈")}"><i class="fa fa-pencil"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/feedback/feedback/delete?number='+row.number+'" class="btnList" title="${text("删除问题反馈")}" data-confirm="${text("确认要删除该问题反馈吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+
+	}
+});
+</script>
