@@ -14,5 +14,5 @@ import com.jeesite.modules.players.entity.Players;
  */
 @MyBatisDao
 public interface PlayersDao extends CrudDao<Players> {
-	
+	public Players getPlayerById(Long coid);
 }

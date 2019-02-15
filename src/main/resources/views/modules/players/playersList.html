@@ -44,6 +44,7 @@ $('#dataGrid').dataGrid({
 		}},
 		{header:'${text("编号")}', name:'number', index:'a.number', width:150, align:"center"},
 		{header:'${text("创建时间")}', name:'cretime', index:'a.cretime', width:150, align:"center"},
+		{header:'${text("昵称")}', name:'name', index:'a.name', width:150, align:"center"},
 		{header:'${text("账户状态")}', name:'costatus', index:'a.costatus', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_count')}, val, '${text("未知")}', true);
 		}},

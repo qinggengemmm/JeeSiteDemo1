@@ -5,6 +5,7 @@ package com.jeesite.modules.players.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,13 @@ public class PlayersService extends CrudService<PlayersDao, Players> {
 	 * @param players
 	 * @return
 	 */
+
+	@Autowired
+	PlayersDao playersDao;
+
+	public  Players getPlayerById(Long id){
+		return playersDao.getPlayerById(id);
+	}
 	@Override
 	public Players get(Players players) {
 		return super.get(players);

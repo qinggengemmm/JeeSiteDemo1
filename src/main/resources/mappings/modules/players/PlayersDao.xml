@@ -11,5 +11,8 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
+	<select id="getPlayerById" resultType="Players">
+		select * from players where coid= #{coid}
+	</select>
 	
 </mapper>

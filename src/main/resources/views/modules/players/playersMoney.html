@@ -1,4 +1,4 @@
-<% layout('/layouts/default.html', {title: '用户列表', libs: ['dataGrid']}){ %>
+<% layout('/layouts/default.html', {title: 'players管理', libs: ['dataGrid']}){ %>
 <div class="main-content">
 
 	<div class="box box-main">
@@ -37,21 +37,24 @@
 // 初始化DataGrid对象
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
+
 	columnModel: [
 		{header:'${text("coid")}', name:'coid', index:'a.coid', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/players/players/form?coid='+row.coid+'&number='+row.number+'" class="btnList" data-title="${text("编辑players")}">'+(val||row.id)+'</a>';
 		}},
 		{header:'${text("编号")}', name:'number', index:'a.number', width:150, align:"center"},
 		{header:'${text("创建时间")}', name:'cretime', index:'a.cretime', width:150, align:"center"},
+		{header:'${text("昵称")}', name:'name', index:'a.name', width:150, align:"center"},
 		{header:'${text("灵石")}', name:'ls', index:'a.ls', width:150, align:"center"},
 		{header:'${text("驿卷")}', name:'yj', index:'a.yj', width:150, align:"center"},
 		{header:'${text("通关印")}', name:'tgy', index:'a.tgy', width:150, align:"center"},
-		{header:'${text("充值提现")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+
+		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 
 			<% if(hasPermi('players:players:edit')){ %>
-				actions.push('<a href="${ctx}/players/players/form?coid='+row.coid+'&number='+row.number+'" class="btn btn-default btnTool" >充值</a>&nbsp;');
-				actions.push('<a href="${ctx}/players/players/delete?coid='+row.coid+'&number='+row.number+'" class="btn btn-default btnTool" >提现</a>&nbsp;');
+				actions.push('<a href="${ctx}/usercz/userCzRecord/list?coid='+row.coid+'&number='+row.number+'" class="btnList" title="${text("玩家充值")}" ><button class="btn btn-primary btn-sm" style="color: chartreuse">${text("充值")}</button></a>&nbsp;');
+				actions.push('<a href="${ctx}/usertx/userTxRecord/list?coid='+row.coid+'&number='+row.number+'" class="btnList" title="${text("玩家提现")}" ><button class="btn btn-primary btn-sm">${text("提现")}</button></a>&nbsp;');
 			<% } %>
 			return actions.join('');
 		}}

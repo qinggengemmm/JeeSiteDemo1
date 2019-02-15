@@ -22,6 +22,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 @Table(name="players", alias="a", columns={
 		@Column(name="coid", attrName="coid", label="coid", isPK=true),
 		@Column(name="number", attrName="number", label="编号", isPK=true),
+		@Column(name="name", attrName="name", label="昵称"),
 		@Column(name="cretime", attrName="cretime", label="创建时间"),
 		@Column(name="costatus", attrName="costatus", label="账户状态"),
 		@Column(name="ls", attrName="ls", label="灵石"),
@@ -35,6 +36,7 @@ public class Players extends DataEntity<Players> {
 	private static final long serialVersionUID = 1L;
 	private Long coid;		// coid
 	private Long number;		// 编号
+	private String name;       //昵称
 	private Date cretime;		// 创建时间
 	private Integer costatus;		// 账户状态
 	private Long ls;		// 灵石
@@ -50,7 +52,14 @@ public class Players extends DataEntity<Players> {
 		this.coid = coid;
 		this.number = number;
 	}
-	
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	public Long getCoid() {
 		return coid;
 	}
