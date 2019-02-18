@@ -3,8 +3,12 @@
  */
 package com.jeesite.modules.daili.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
+import com.jeesite.modules.players.dao.PlayersDao;
+import com.jeesite.modules.players.entity.Players;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +31,12 @@ public class DailiService extends CrudService<DailiDao, Daili> {
 	
 	@Autowired
 	private TxRecordDao txRecordDao;
+
+	@Autowired
+	private DailiDao dailiDao;
+
+	@Autowired
+	private PlayersDao playersDao;
 	
 	/**
 	 * 获取单条数据
@@ -102,5 +112,39 @@ public class DailiService extends CrudService<DailiDao, Daili> {
 		txRecord.setDlId(daili);
 		txRecordDao.delete(txRecord);
 	}
-	
+
+	@Transactional(readOnly=false)
+	public String addDaiLi(Long coid) {
+		Daili daili = dailiDao.isDaiLi(coid);
+		String yqm=getyqm();
+		if (daili!=null){
+			return null;
+		}else {
+			Players players =  playersDao.getPlayerById(coid);
+			Daili newDaiLi = new Daili();
+			newDaiLi.setIsNewRecord(true);
+			newDaiLi.setMoney(0L);
+			newDaiLi.setDlId(coid);
+			newDaiLi.setDlTime(new Date());
+			newDaiLi.setPeople(0L);
+			newDaiLi.setName(players.getName());
+			newDaiLi.setNumber(dailiDao.getMaxNumber()+1);
+			while (dailiDao.hasCode(yqm)!=null){
+				yqm=getyqm();
+			}
+			newDaiLi.setCode(getyqm());
+			super.save(newDaiLi);
+		}
+
+		return yqm;
+	}
+
+	private String getyqm() {
+		Random rand=new Random();//生成随机数
+		String cardNnumer="";
+		for(int a=0;a<6;a++){
+			cardNnumer+=rand.nextInt(10);//生成6位数字
+		}
+		return cardNnumer;
+	}
 }

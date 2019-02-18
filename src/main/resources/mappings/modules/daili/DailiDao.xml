@@ -11,5 +11,17 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
+
+	<select id="isDaiLi" resultType="DaiLi">
+		select * from daili where dl_id = #{usId} limit 1;
+	</select>
+
+	<select id="hasCode" resultType="DaiLi">
+		select * from daili where code = #{yqm} limit 1;
+	</select>
+
+	<select id="getMaxNumber" resultType="Long">
+		SELECT MAX(number) FROM daili;
+	</select>
 	
 </mapper>

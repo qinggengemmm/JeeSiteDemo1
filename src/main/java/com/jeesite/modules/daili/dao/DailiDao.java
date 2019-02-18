@@ -14,5 +14,8 @@ import com.jeesite.modules.daili.entity.Daili;
  */
 @MyBatisDao
 public interface DailiDao extends CrudDao<Daili> {
-	
+	Daili isDaiLi(Long usId);
+	Daili hasCode(String yqm);
+	Long getMaxNumber();
+
 }

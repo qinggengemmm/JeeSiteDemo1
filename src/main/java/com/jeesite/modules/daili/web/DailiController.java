@@ -6,7 +6,10 @@ package com.jeesite.modules.daili.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jeesite.modules.daili.dao.DailiDao;
 import com.jeesite.modules.daili.entity.TxRecord;
+import com.jeesite.modules.players.dao.PlayersDao;
+import com.jeesite.modules.players.entity.Players;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +37,12 @@ public class DailiController extends BaseController {
 
 	@Autowired
 	private DailiService dailiService;
+
+	@Autowired
+	private PlayersDao playersDao;
+
+	@Autowired
+    private DailiDao dailiDao;
 	
 	/**
 	 * 获取数据
@@ -98,6 +107,7 @@ public class DailiController extends BaseController {
 		}
 
 		newTxRecord.setNumber(Long.valueOf(str));
+
 		if (txMoney > daili.getMoney()){
 			newTxRecord.setTxStatus("失败");
 			daili.getTxRecordList().add(newTxRecord);
@@ -126,5 +136,28 @@ public class DailiController extends BaseController {
 		dailiService.delete(daili);
 		return renderResult(Global.TRUE, text("删除代理列表成功！"));
 	}
+
+	/**
+	 * 添加代理列表
+	 */
+
+	@RequestMapping(value = "addDaiLiList")
+	public String addDaiLiList(Players players, Model model) {
+		model.addAttribute("players", players);
+		return "modules/daili/playersDaiLi";
+	}
+
+    @RequestMapping(value = "addDaiLi")
+    @ResponseBody
+    public String addDaiLi(Long coid){
+	    String yqm = dailiService.addDaiLi(coid);
+	    if (yqm==null){
+            return renderResult(Global.FALSE, text("该用户已是代理"));
+        }
+	    else {
+            return renderResult(Global.TRUE, text("添加代理列表成功！邀请码为:"+yqm));
+
+        }
+    }
 	
 }
