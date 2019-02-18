@@ -1,0 +1,28 @@
+<% layout('/layouts/default.html', {title: '清空内容', libs: ['validate','dataGrid']}){ %>
+
+<#form:form id="inputForm"  action = "${ctx}/test/delete/deleteAll" method="get" class="form-horizontal">
+
+<div class="row" style="margin-top: 20px;margin-left: 200px">
+    <button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i> ${text('清空')}</button>&nbsp;
+</div>
+</#form:form>
+
+
+
+<% } %>
+
+<script>
+    $("#inputForm").validate({
+        submitHandler: function(form){
+            if (confirm("确认清空吗")) {
+                js.ajaxSubmitForm($(form), function(data){
+                    js.showMessage(data.message);
+                    if(data.result == Global.TRUE){
+
+                    }
+                }, "json");
+            }
+
+        }
+    });
+</script>
