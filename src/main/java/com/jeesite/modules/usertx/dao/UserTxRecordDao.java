@@ -16,5 +16,7 @@ import com.jeesite.modules.usertx.entity.UserTxRecord;
 public interface UserTxRecordDao extends CrudDao<UserTxRecord> {
 
     Long getMaxNumber();
+
+    void deleteAll();
 	
 }

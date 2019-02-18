@@ -15,4 +15,5 @@ import com.jeesite.modules.usercz.entity.UserCzRecord;
 @MyBatisDao
 public interface UserCzRecordDao extends CrudDao<UserCzRecord> {
     public Long getMaxNumber();
+    void deleteAll();
 }

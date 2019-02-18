@@ -14,5 +14,9 @@
 	<select id="getMaxNumber" resultType="Long">
 		SELECT MAX(number) FROM user_cz_record
 	</select>
+
+	<delete id="deleteAll">
+		truncate table user_cz_record
+	</delete>
 	
 </mapper>
