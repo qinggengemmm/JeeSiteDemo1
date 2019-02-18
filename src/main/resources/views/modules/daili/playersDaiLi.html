@@ -1,0 +1,65 @@
+<% layout('/layouts/default.html', {title: '添加代理', libs: ['dataGrid','validate']}){ %>
+<div class="main-content">
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa fa-list-alt"></i> ${text('添加代理')}
+            </div>
+            <div class="box-tools pull-right">
+                <a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+                <% if(hasPermi('players:players:edit')){ %>
+                <a href="${ctx}/players/players/form" class="btn btn-default btnTool" title="${text('新增players')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+                <% } %>
+            </div>
+        </div>
+        <div class="box-body">
+            <#form:form id="searchForm" model="${players}" action="${ctx}/players/players/listData" method="post" class="form-inline hide"
+            data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+            <div class="form-group">
+                <label class="control-label">${text('coid')}：</label>
+                <div class="control-inline">
+                    <#form:input path="coid" maxlength="255" class="form-control width-120"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+                <button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+            </div>
+        </#form:form>
+        <table id="dataGrid"></table>
+        <div id="dataGridPage"></div>
+    </div>
+</div>
+</div>
+<% } %>
+<script>
+    // 初始化DataGrid对象
+    $('#dataGrid').dataGrid({
+        searchForm: $("#searchForm"),
+        showCheckbox: true,
+        columnModel: [
+            {header:'${text("coid")}', name:'coid', index:'a.coid', width:150, align:"center", frozen:true, formatter: function(val, obj, row, act){
+                    return '<a href="${ctx}/players/players/form?coid='+row.coid+'&number='+row.number+'" class="btnList" data-title="${text("编辑players")}">'+(val||row.id)+'</a>';
+                }},
+            {header:'${text("编号")}', name:'number', index:'a.number', width:150, align:"center"},
+            {header:'${text("创建时间")}', name:'cretime', index:'a.cretime', width:150, align:"center"},
+            {header:'${text("昵称")}', name:'name', index:'a.name', width:150, align:"center"},
+            {header:'${text("账户状态")}', name:'costatus', index:'a.costatus', width:150, align:"center", formatter: function(val, obj, row, act){
+                    return js.getDictLabel(${@DictUtils.getDictListJson('sys_count')}, val, '${text("未知")}', true);
+                }},
+            {header:'${text("灵石")}', name:'ls', index:'a.ls', width:150, align:"center"},
+            {header:'${text("驿卷")}', name:'yj', index:'a.yj', width:150, align:"center"},
+            {header:'${text("通关印")}', name:'tgy', index:'a.tgy', width:150, align:"center"},
+            {header:'${text("是否在线")}', name:'isonline', index:'a.isonline', width:150, align:"center"},
+            {header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+                    var actions = [];
+                    actions.push('<a  href="${ctx}/daili/daili/addDaiLi?coid='+row.coid+'&number='+row.number+'" class="btnList" title="${text("添加代理")}"  data-confirm="${text("确认要添加该代理吗？")}"><button class="btn btn-primary btn-sm">${text("添加代理")}</button></a>&nbsp;');
+                    return actions.join('');
+                }}
+        ],
+        // 加载成功后执行事件
+        ajaxSuccess: function(data){
+
+        }
+    });
+</script>
