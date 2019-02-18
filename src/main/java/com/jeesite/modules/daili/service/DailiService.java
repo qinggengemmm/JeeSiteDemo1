@@ -132,7 +132,7 @@ public class DailiService extends CrudService<DailiDao, Daili> {
 			while (dailiDao.hasCode(yqm)!=null){
 				yqm=getyqm();
 			}
-			newDaiLi.setCode(getyqm());
+			newDaiLi.setCode(yqm);
 			super.save(newDaiLi);
 		}
 

@@ -37,7 +37,6 @@
 // 初始化DataGrid对象
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
-	showCheckbox: true,
 	columnModel: [
 		{header:'${text("coid")}', name:'coid', index:'a.coid', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/players/players/form?coid='+row.coid+'&number='+row.number+'" class="btnList" data-title="${text("编辑players")}">'+(val||row.id)+'</a>';
