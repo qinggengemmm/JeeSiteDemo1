@@ -79,6 +79,7 @@ public class UserCzRecordService extends CrudService<UserCzRecordDao, UserCzReco
 	}
 
 	public Long getMaxNumber() {
-		return userCzRecordDao.getMaxNumber();
+		Long res = userCzRecordDao.getMaxNumber();
+		return res==null?0L:res;
 	}
 }

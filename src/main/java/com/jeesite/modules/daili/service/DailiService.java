@@ -128,7 +128,8 @@ public class DailiService extends CrudService<DailiDao, Daili> {
 			newDaiLi.setDlTime(new Date());
 			newDaiLi.setPeople(0L);
 			newDaiLi.setName(players.getName());
-			newDaiLi.setNumber(dailiDao.getMaxNumber()+1);
+			Long num = dailiDao.getMaxNumber();
+			newDaiLi.setNumber(num==null?0:num+1L);
 			while (dailiDao.hasCode(yqm)!=null){
 				yqm=getyqm();
 			}

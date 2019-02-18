@@ -14,5 +14,7 @@ import com.jeesite.modules.daili.entity.TxRecord;
  */
 @MyBatisDao
 public interface TxRecordDao extends CrudDao<TxRecord> {
+
+    Long getMaxNumber();
 	
 }

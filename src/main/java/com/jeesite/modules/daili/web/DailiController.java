@@ -6,7 +6,9 @@ package com.jeesite.modules.daili.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jeesite.common.collect.ListUtils;
 import com.jeesite.modules.daili.dao.DailiDao;
+import com.jeesite.modules.daili.dao.TxRecordDao;
 import com.jeesite.modules.daili.entity.TxRecord;
 import com.jeesite.modules.players.dao.PlayersDao;
 import com.jeesite.modules.players.entity.Players;
@@ -43,6 +45,9 @@ public class DailiController extends BaseController {
 
 	@Autowired
     private DailiDao dailiDao;
+
+	@Autowired
+	private TxRecordDao txRecordDao;
 	
 	/**
 	 * 获取数据
@@ -91,6 +96,9 @@ public class DailiController extends BaseController {
 	@PostMapping(value = "save")
 	@ResponseBody
 	public String save( @Validated Daili daili,@RequestParam(defaultValue = "0") String tx) {
+		if (daili.getTxRecordList().get(0)==null ||daili.getTxRecordList().get(0).getNumber()==null){
+			daili.setTxRecordList(ListUtils.newArrayList());
+		}
 		long txMoney = Long.valueOf(tx);
 		//生成提现记录
 		TxRecord newTxRecord = new TxRecord();
@@ -100,13 +108,8 @@ public class DailiController extends BaseController {
 		newTxRecord.setTxMoney(txMoney);
 		newTxRecord.setIsNewRecord(true);
 		//根据时间获取唯一number
-		String[] strNow = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()).toString().split("-");
-		String str="";
-		for (String string : strNow) {
-			str=str+string;
-		}
-
-		newTxRecord.setNumber(Long.valueOf(str));
+		Long num = txRecordDao.getMaxNumber();
+		newTxRecord.setNumber((num==null?0:num)+1);
 
 		if (txMoney > daili.getMoney()){
 			newTxRecord.setTxStatus("失败");

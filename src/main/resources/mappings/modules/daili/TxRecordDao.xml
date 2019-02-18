@@ -11,5 +11,9 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
+
+	<select id="getMaxNumber" resultType="Long">
+		SELECT MAX(number) FROM tx_record
+	</select>
 	
 </mapper>

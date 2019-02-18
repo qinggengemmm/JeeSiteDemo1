@@ -37,7 +37,8 @@ public class UserTxRecordService extends CrudService<UserTxRecordDao, UserTxReco
 	}
 
 	public Long getMaxNumber(){
-		return userTxRecordDao.getMaxNumber();
+		Long res = userTxRecordDao.getMaxNumber();
+		return res==null?0L:res;
 	}
 	
 	/**
