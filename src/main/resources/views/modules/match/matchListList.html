@@ -1,0 +1,71 @@
+<% layout('/layouts/default.html', {title: '比赛管理', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('比赛管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
+				<% if(hasPermi('match:matchList:edit')){ %>
+					<a href="${ctx}/match/matchList/form" class="btn btn-default btnTool" title="${text('新增比赛')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+				<% } %>
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${matchList}" action="${ctx}/match/matchList/listData" method="post" class="form-inline hide"
+					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('游戏类型')}：</label>
+					<div class="control-inline width-120">
+						<#form:select path="gameType" dictType="game_type" blankOption="true" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
+					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+// 初始化DataGrid对象
+$('#dataGrid').dataGrid({
+	searchForm: $("#searchForm"),
+	columnModel: [
+		{header:'${text("编号")}', name:'num', index:'a.num', width:150, align:"center"},
+		{header:'${text("比赛ID")}', name:'matchId', index:'a.match_id', width:150, align:"left"},
+		{header:'${text("游戏类型")}', name:'gameType', index:'a.game_type', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('game_type')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("比赛类型")}', name:'matchType', index:'a.match_type', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('match_type')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("游戏人数")}', name:'peopleNum', index:'a.people_num', width:150, align:"center"},
+		{header:'${text("奖励类型")}', name:'giftType', index:'a.gift_type', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('first_gift')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("第一名奖励")}', name:'firstGift', index:'a.first_gift', width:150, align:"left"},
+		{header:'${text("第二名奖励")}', name:'secondGift', index:'a.second_gift', width:150, align:"center"},
+		{header:'${text("第三名奖励")}', name:'thirdGift', index:'a.third_gift', width:150, align:"center"},
+		{header:'${text("比赛最大局数")}', name:'maxMatchNum', index:'a.max_match_num', width:150, align:"center"},
+		{header:'${text("开始时间")}', name:'startTime', index:'a.start_time', width:150, align:"center"},
+		{header:'${text("奖励图片地址")}', name:'picUrl', index:'a.pic_url', width:150, align:"left"},
+		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
+			var actions = [];
+			<% if(hasPermi('match:matchList:edit')){ %>
+				actions.push('<a href="${ctx}/match/matchList/delete?num='+row.num+'" class="btnList" title="${text("删除比赛")}" data-confirm="${text("确认要删除该比赛吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
+			<% } %>
+			return actions.join('');
+		}}
+	],
+	// 加载成功后执行事件
+	ajaxSuccess: function(data){
+		
+	}
+});
+</script>

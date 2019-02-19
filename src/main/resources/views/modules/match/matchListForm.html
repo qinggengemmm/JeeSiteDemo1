@@ -1,0 +1,241 @@
+<% layout('/layouts/default.html', {title: '比赛管理', libs: ['validate','fileupload']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header with-border">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text(matchList.isNewRecord ? '新增比赛' : '编辑比赛')}
+			</div>
+			<div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+			</div>
+		</div>
+		<#form:form id="inputForm" model="${matchList}" action="${ctx}/match/matchList/save" method="post" class="form-horizontal">
+			<div class="box-body">
+				<div class="form-unit">${text('基本信息')}</div>
+				<#form:hidden path="num"/>
+				<div class="row">
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('比赛ID')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="matchId" maxlength="255" class="form-control digits" />
+						</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('游戏类型')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:select path="gameType" dictType="game_type"
+								style="width: 100%;height: 30px;border: 1px solid #ccc;border-radius: 4px;"
+								blankOption="false"
+								onblur="checkGameType()"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('比赛类型')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8" id="matchtype" >
+								<#form:select  path="matchType"  dictType="match_type"
+								style="width: 100%;height: 30px;border: 1px solid #ccc;border-radius: 4px;"
+								blankOption="true" onblur="checkMatchType()"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required ">*</span> ${text('游戏人数')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="peopleNum" maxlength="255" class="form-control digits" onblur="getPeopleNum()"/>
+							</div>
+						</div>
+					</div>
+					<span style="font-size: large">× </span><span id="perNum" style="font-size: large"  >3</span><span style="font-size: large"> = </span>
+					<span style="font-size: large" id="allpeople" >0</span> <span style="font-size: large"  >人</span>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('奖励类型')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:radio path="giftType" dictType="first_gift" class="form-control" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('第一名奖励')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="firstGift" maxlength="255" class="form-control"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('第二名奖励')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:select path="secondGift" dictType="gift_type"
+								style="width: 100%;height: 30px;border: 1px solid #ccc;border-radius: 4px;" blankOption="true" />
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('数量')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input name="secondNum" maxlength="25" class="form-control digits"  />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('第三名奖励')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:select  path="thirdGift" dictType="gift_type"
+								style="width: 100%;height: 30px;border: 1px solid #ccc;border-radius: 4px;"
+								blankOption="true"   />
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('数量')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input name="thirdNum" maxlength="25" class="form-control digits"  />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('比赛最大局数')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="maxMatchNum" maxlength="255" class="form-control digits"  />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row" id="stTime">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required">*</span> ${text('开始时间')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input path="startTime" readonly="true" maxlength="20" class="form-control Wdate"
+									dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:true});"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row" style="display: none">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('奖励图片地址')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:input  path="picUrl" maxlength="255" class="form-control"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4">${text('奖励图片上传(JPG)')}：</label>
+							<div class="col-sm-8">
+								<#form:fileupload id="uploadImage" bizKey="${matchList.id}" bizType="matchList_image"
+									uploadType="image" class="" readonly="false" returnPath="true"
+								filePathInputId="picurl" allowSuffixes="jpg" maxUploadNum="1" imageMaxWidth="90"
+								imageMaxHeight="90"/>
+								<#form:hidden name="picurl" class="form-control"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="box-footer">
+				<div class="row">
+					<div class="col-sm-offset-2 col-sm-10">
+						<% if (hasPermi('match:matchList:edit')){ %>
+							<button type="submit" class="btn btn-sm btn-primary" id="btnSubmit"><i class="fa fa-check"></i> ${text('保 存')}</button>&nbsp;
+						<% } %>
+						<button type="button" class="btn btn-sm btn-default" id="btnCancel" onclick="js.closeCurrentTabPage()"><i class="fa fa-reply-all"></i> ${text('关 闭')}</button>
+					</div>
+				</div>
+			</div>
+		</#form:form>
+	</div>
+
+</div>
+<% } %>
+
+<script>
+	function checkMatchType(){
+		var  myselect=document.getElementById("matchType");
+		var index=myselect.selectedIndex ;
+		if (myselect.options[index].value=="定点开赛") {
+			document.getElementById("stTime").style.display="";
+		}else{
+			document.getElementById("stTime").style.display="none";
+
+		}
+	};
+	function checkGameType(){
+
+		var  myselect=document.getElementById("gameType");
+		var index=myselect.selectedIndex ;
+
+		if (myselect.options[index].value=="斗地主") {
+			document.getElementById("perNum").innerText=3;
+		}else {
+			document.getElementById("perNum").innerText=4;
+		}
+	};
+	function getPeopleNum(){
+		var ju = document.getElementById("peopleNum").value;
+		var perNum= document.getElementById("perNum").innerText;
+		document.getElementById("allpeople").innerText=ju*perNum;
+	}
+$("#inputForm").validate({
+	submitHandler: function(form){
+		js.ajaxSubmitForm($(form), function(data){
+			js.showMessage(data.message);
+			if(data.result == Global.TRUE){
+				js.closeCurrentTabPage(function(contentWindow){
+					contentWindow.page();
+				});
+			}
+		}, "json");
+    }
+});
+
+
+</script>
